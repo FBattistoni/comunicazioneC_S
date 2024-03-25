@@ -19,14 +19,20 @@ import java.util.logging.Logger;
  * @author Gaming
  */
 public class Client {
-     private String nome;
+    private String nome;
     private String colore;
     private Socket socket;
     private BufferedReader tastiera;
     private BufferedReader inDalServer;
     private DataOutputStream outVersoServer;
+    private boolean chiuso;
 
+    public boolean isChiuso() {
+        return chiuso;
+    }
+    
     public Client(String nomeDefault, String coloreDefault) {
+        this.chiuso = true;
         this.nome = nomeDefault;
         this.colore = coloreDefault;
         tastiera = new BufferedReader(new InputStreamReader(System.in));
@@ -61,6 +67,10 @@ public class Client {
             String messaggio = tastiera.readLine();
             outVersoServer.writeBytes(messaggio + '\n');
             System.out.println("messaggio inviato");
+            if(messaggio.equals("chiudi")){
+                this.chiudi();
+                this.chiuso = false;
+            }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -70,6 +80,10 @@ public class Client {
         try {
             String messaggioRicevuto = inDalServer.readLine(); //assegna alla variabile il messaggio ricevuto dal client
             System.out.println("messaggio ricevuto: " + messaggioRicevuto); 
+            if(messaggioRicevuto.equals("chiudi")){
+                this.chiudi();
+                this.chiuso = false;
+            }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }

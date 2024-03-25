@@ -20,10 +20,16 @@ public class Server {
     private int porta;
     private BufferedReader inDalClient;
     private DataOutputStream outVersoClient; //teoricamente potrebbe essere possibile con un gestore di stringhe di caratteri
+    private boolean chiuso;
     private BufferedReader tastiera; //servirà per prendere input da tastiera
 
+    public boolean isChiuso() { //variabile che sereve a controllare che il csnale non sia chiuso
+        return chiuso;
+    }
+    
     public Server(int porta) {
         this.porta=porta;
+        this.chiuso=true;
         try {
             
             this.serverSocket=new ServerSocket(this.porta);
@@ -62,6 +68,10 @@ public class Server {
             String messaggio = tastiera.readLine();
             outVersoClient.writeBytes(messaggio + '\n');
             System.out.println("messaggio inviato");
+             if(messaggio.equals("chiudi")){
+                this.chiudi();
+                this.chiuso=false; //trasformo la variabile creata in precedenza in false in modo da uscire dal while nel main
+            }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,6 +81,10 @@ public class Server {
         try {
             String messaggioRicevuto = inDalClient.readLine(); //assegna alla variabile il messaggio ricevuto dal client
             System.out.println("messaggio ricevuto: " + messaggioRicevuto); 
+            if(messaggioRicevuto.equals("chiudi")){ //controlla che il messaggio inviato non corrisponda alla parola chiave per la chiusura della comunicazione
+                this.chiudi();
+                this.chiuso=false;
+            }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
