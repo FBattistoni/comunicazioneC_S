@@ -6,17 +6,13 @@ package com.mycompany.comunicazione_c_s;
 
 /**
  *
- * @author Gaming
+ * @author FBattistoni
  */
 public class Comunicazione_c_s {
      public static void main(String[] args) {
-      Server server=new Server(1789);
+      MultiServer server=new MultiServer(1789);
       server.attendi();
-      while(server.isChiuso()){
-        server.leggi();
-        if(server.isChiuso())
-            server.scrivi();
-      }
+      
       
     }
 

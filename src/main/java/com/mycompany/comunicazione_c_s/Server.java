@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  *
- * @author Gaming
+ * @author FBattistoni
  */
-public class Server {
+public class Server extends Thread{
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int porta;
@@ -27,39 +27,30 @@ public class Server {
         return chiuso;
     }
     
-    public Server(int porta) {
-        this.porta=porta;
-        this.chiuso=true;
+    public Server(Socket clientSocket) {
         try {
-            
-            this.serverSocket=new ServerSocket(this.porta);
-            System.out.println("Il server è in ascolto sulla porta : "+this.porta);
+            this.clientSocket = clientSocket;
+            this.chiuso=true;
             tastiera = new BufferedReader(new InputStreamReader(System.in));
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Errore in fase di apertura e ascolto ");
-        }
-    }
-
-    public void attendi() {
-        
-        try {
-            if(serverSocket != null){
-                //accept,istaura una connessione
-             this.clientSocket= serverSocket.accept();
-            System.out.println("Connessione stabilita con il Client");
-            this.termina(); //chiudo il socket del server in attesa di connesione dal client in quanto comunicazione a un solo thread
             inDalClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outVersoClient = new DataOutputStream(clientSocket.getOutputStream());
-            }
-            
-        }catch(BindException ex){
-            System.err.println("Porta già in uso");
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Errore nella fase di connessione con il client");
         }
+    }
+        
+            
+            
+    
+   
+    
+    @Override
+    public void run() {
+        while(this.isChiuso()){
+        this.leggi();
+        if(this.isChiuso())
+            this.scrivi();
+      }
     }
 
     public void scrivi() {

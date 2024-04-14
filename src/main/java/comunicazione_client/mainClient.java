@@ -6,7 +6,7 @@ package comunicazione_client;
 
 /**
  *
- * @author Gaming
+ * @author FBattistoni
  */
 public class mainClient {
     public static void main(String[] args) {
